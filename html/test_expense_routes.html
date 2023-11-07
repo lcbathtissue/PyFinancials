@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>PyFinancials Expense Tracker</title>
+    <!-- Add Bootstrap CSS -->
+    <link rel="icon" href="pyicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>PyFinancials Expense Tracker</h1>
+
+        <div class="mt-4">
+            <h3>Expenses</h3>
+            <ul id="expensesList"></ul>
+        </div>
+
+        <div class="mt-4">
+            <h3>Add Expense</h3>
+            <div class="form-group">
+                <label for="amountInput">Amount:</label>
+                <input type="number" class="form-control" id="amountInput" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="categoryInput">Category:</label>
+                <input type="text" class="form-control" id="categoryInput" placeholder="Enter category">
+            </div>
+            <div class="form-group">
+                <label for="descriptionInput">Description:</label>
+                <input type="text" class="form-control" id="descriptionInput" placeholder="Enter description">
+            </div>
+            <button class="btn btn-primary" onclick="addExpense()">Add Expense</button>
+        </div>
+
+        <div class="mt-4">
+            <h3>Update Expense</h3>
+            <div class="form-group">
+                <label for="updateIdInput">Expense ID:</label>
+                <input type="number" class="form-control" id="updateIdInput" placeholder="Enter expense ID">
+            </div>
+            <div class="form-group">
+                <label for="updateAmountInput">Amount:</label>
+                <input type="number" class="form-control" id="updateAmountInput" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="updateCategoryInput">Category:</label>
+                <input type="text" class="form-control" id="updateCategoryInput" placeholder="Enter category">
+            </div>
+            <div class="form-group">
+                <label for="updateDescriptionInput">Description:</label>
+                <input type="text" class="form-control" id="updateDescriptionInput" placeholder="Enter description">
+            </div>
+            <button class="btn btn-primary" onclick="updateExpense()">Update Expense</button>
+        </div>
+
+        <div class="mt-4">
+            <h3>Delete Expense</h3>
+            <div class="form-group">
+                <label for="deleteIdInput">Expense ID:</label>
+                <input type="number" class="form-control" id="deleteIdInput" placeholder="Enter expense ID">
+            </div>
+            <button class="btn btn-danger" onclick="deleteExpense()">Delete Expense</button>
+        </div>
+    </div>
+
+    <!-- Add jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        const apiBaseUrl = 'http://142.198.192.83:5000'; // Replace with your API's base URL
+
+        // Function to load expenses
+        function loadExpenses() {
+            $.ajax({
+                url: `${apiBaseUrl}/expenses`,
+                type: 'GET',
+                success: function (expenses) {
+                    const expenseList = expenses.map(expense => `<li>Expense ID: ${expense.id}, Amount: $${expense.amount}, Category: ${expense.category}, Description: ${expense.description}</li>`);
+                    $('#expensesList').html(expenseList.join(''));
+                }
+            });
+        }
+
+        // Function to add a new expense
+        function addExpense() {
+            const amount = $('#amountInput').val();
+            const category = $('#categoryInput').val();
+            const description = $('#descriptionInput').val();
+
+            if (amount && category) {
+                const data = {
+                    "amount": amount,
+                    "category": category,
+                    "description": description
+                };
+
+                $.ajax({
+                    url: `${apiBaseUrl}/expenses`,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function (response) {
+                        alert(response.message);
+                        loadExpenses();
+                    }
+                });
+            } else {
+                alert('Amount and category cannot be empty.');
+            }
+        }
+
+        // Function to update an expense
+        function updateExpense() {
+            const expenseId = $('#updateIdInput').val();
+            const amount = $('#updateAmountInput').val();
+            const category = $('#updateCategoryInput').val();
+            const description = $('#updateDescriptionInput').val();
+
+            if (expenseId && amount && category) {
+                const data = {
+                    "id": parseInt(expenseId),
+                    "amount": amount,
+                    "category": category,
+                    "description": description
+                };
+
+                $.ajax({
+                    url: `${apiBaseUrl}/expenses/${expenseId}`,
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function (response) {
+                        alert(response.message);
+                        loadExpenses();
+                    },
+                    error: function (xhr, status, error) {
+                        if (xhr.status === 404) {
+                            alert('Expense not found.');
+                        }
+                    }
+                });
+            } else {
+                alert('Expense ID, amount, and category cannot be empty.');
+            }
+        }
+
+        // Function to delete an expense
+        function deleteExpense() {
+            const expenseId = $('#deleteIdInput').val();
+
+            if (expenseId) {
+                $.ajax({
+                    url: `${apiBaseUrl}/expenses/${expenseId}`,
+                    type: 'DELETE',
+                    success: function (response) {
+                        alert(response.message);
+                        loadExpenses();
+                    },
+                    error: function (xhr, status, error) {
+                        if (xhr.status === 404) {
+                            alert('Expense not found.');
+                        }
+                    }
+                });
+            } else {
+                alert('Expense ID cannot be empty.');
+            }
+        }
+
+        // Load expenses on page load
+        loadExpenses();
+    </script>
+</body>
+</html>

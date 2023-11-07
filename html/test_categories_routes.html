@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>PyFinancials Expense Categories</title>
+    <!-- Add Bootstrap CSS -->
+    <link rel="icon" href="pyicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>PyFinancials Expense Categories</h1>
+
+        <div class="mt-4">
+            <h3>Predefined Categories</h3>
+            <ul id="predefinedCategories"></ul>
+        </div>
+
+        <div class="mt-4">
+            <h3>Create Custom Category</h3>
+            <div class="form-group">
+                <label for="customCategoryInput">Category Name:</label>
+                <input type="text" class="form-control" id="customCategoryInput" placeholder="Enter category name">
+            </div>
+            <button class="btn btn-primary" onclick="createCustomCategory()">Create Custom Category</button>
+        </div>
+
+        <div class="mt-4">
+            <h3>Update Custom Category</h3>
+            <div class="form-group">
+                <label for="updateCategoryInput">Category Name:</label>
+                <input type="text" class="form-control" id="updateCategoryInput" placeholder="Enter category name">
+            </div>
+            <button class="btn btn-primary" onclick="updateCustomCategory()">Update Custom Category</button>
+        </div>
+
+        <div class="mt-4">
+            <h3>Delete Custom Category</h3>
+            <div class="form-group">
+                <label for="deleteCategoryInput">Category Name:</label>
+                <input type="text" class="form-control" id="deleteCategoryInput" placeholder="Enter category name">
+            </div>
+            <button class="btn btn-danger" onclick="deleteCustomCategory()">Delete Custom Category</button>
+        </div>
+    </div>
+
+    <!-- Add jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        const apiBaseUrl = 'http://142.198.192.83:5000'; // Replace with your API's base URL
+
+        // Function to load predefined categories
+        function loadPredefinedCategories() {
+            $.ajax({
+                url: `${apiBaseUrl}/categories`,
+                type: 'GET',
+                success: function (categories) {
+                    const predefinedCategories = categories.map(category => `<li>${category}</li>`);
+                    $('#predefinedCategories').html(predefinedCategories.join(''));
+                }
+            });
+        }
+
+        // Function to create a custom category
+        function createCustomCategory() {
+            const categoryName = $('#customCategoryInput').val();
+
+            if (categoryName) {
+                const data = {
+                    "name": categoryName
+                };
+
+                $.ajax({
+                    url: `${apiBaseUrl}/categories`,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function (response) {
+                        alert(response.message);
+                        loadPredefinedCategories();
+                    }
+                });
+            } else {
+                alert('Category name cannot be empty.');
+            }
+        }
+
+        // Function to update a custom category
+        function updateCustomCategory() {
+            const categoryName = $('#updateCategoryInput').val();
+
+            if (categoryName) {
+                const data = {
+                    "name": categoryName
+                };
+
+                $.ajax({
+                    url: `${apiBaseUrl}/categories/${categoryName}`,
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function (response) {
+                        alert(response.message);
+                        loadPredefinedCategories();
+                    },
+                    error: function (xhr, status, error) {
+                        if (xhr.status === 404) {
+                            alert('Custom category not found.');
+                        }
+                    }
+                });
+            } else {
+                alert('Category name cannot be empty.');
+            }
+        }
+
+        // Function to delete a custom category
+        function deleteCustomCategory() {
+            const categoryName = $('#deleteCategoryInput').val();
+
+            if (categoryName) {
+                $.ajax({
+                    url: `${apiBaseUrl}/categories/${categoryName}`,
+                    type: 'DELETE',
+                    success: function (response) {
+                        alert(response.message);
+                        loadPredefinedCategories();
+                    },
+                    error: function (xhr, status, error) {
+                        if (xhr.status === 404) {
+                            alert('Custom category not found.');
+                        }
+                    }
+                });
+            } else {
+                alert('Category name cannot be empty.');
+            }
+        }
+
+        // Load predefined categories on page load
+        loadPredefinedCategories();
+    </script>
+</body>
+</html>

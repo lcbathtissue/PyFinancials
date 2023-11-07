@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>PyFinancials Reports</title>
+    <!-- Add Bootstrap CSS -->
+    <link rel="icon" href="pyicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>PyFinancials Reports</h1>
+
+        <div class="mt-4">
+            <h3>Income Reports</h3>
+            <button class="btn btn-primary" onclick="getIncomeReports()">Get Income Reports</button>
+            <div id="incomeReports"></div>
+        </div>
+
+        <div class="mt-4">
+            <h3>Expense Reports</h3>
+            <button class="btn btn-primary" onclick="getExpenseReports()">Get Expense Reports</button>
+            <div id="expenseReports"></div>
+        </div>
+
+        <div class="mt-4">
+            <h3>Savings Reports</h3>
+            <button class="btn btn-primary" onclick="getSavingsReports()">Get Savings Reports</button>
+            <div id="savingsReports"></div>
+        </div>
+    </div>
+
+    <!-- Add jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        const apiBaseUrl = 'http://142.198.192.83:5000'; // Replace with your API's base URL
+
+        // Function to get income reports
+        function getIncomeReports() {
+            $.ajax({
+                url: `${apiBaseUrl}/reports/income`,
+                type: 'GET',
+                success: function (data) {
+                    const incomeReports = JSON.stringify(data, null, 4);
+                    $('#incomeReports').html(`<pre>${incomeReports}</pre>`);
+                }
+            });
+        }
+
+        // Function to get expense reports
+        function getExpenseReports() {
+            $.ajax({
+                url: `${apiBaseUrl}/reports/expenses`,
+                type: 'GET',
+                success: function (data) {
+                    const expenseReports = JSON.stringify(data, null, 4);
+                    $('#expenseReports').html(`<pre>${expenseReports}</pre>`);
+                }
+            });
+        }
+
+        // Function to get savings reports
+        function getSavingsReports() {
+            $.ajax({
+                url: `${apiBaseUrl}/reports/savings`,
+                type: 'GET',
+                success: function (data) {
+                    const savingsReports = JSON.stringify(data, null, 4);
+                    $('#savingsReports').html(`<pre>${savingsReports}</pre>`);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

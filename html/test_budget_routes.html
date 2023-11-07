@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>PyFinancials Budget App</title>
+    <!-- Add Bootstrap CSS -->
+    <link rel="icon" href="pyicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>PyFinancials Budget App</h1>
+
+        <div class="mt-4">
+            <h3>Budget Information</h3>
+            <p>Income: <span id="income"></span></p>
+            <p>Categories: <span id="categories"></span></p>
+        </div>
+
+        <div class="mt-4">
+            <h3>Set Budget</h3>
+            <div class="form-group">
+                <label for="incomeInput">Income:</label>
+                <input type="number" class="form-control" id="incomeInput" placeholder="Enter income">
+            </div>
+            <div class="form-group">
+                <label for="categoriesInput">Categories (comma-separated):</label>
+                <input type="text" class="form-control" id="categoriesInput" placeholder="e.g., Food,Housing,Transportation">
+            </div>
+            <button class="btn btn-primary" onclick="setBudget()">Set Budget</button>
+        </div>
+
+        <div class="mt-4">
+            <h3>Update Budget</h3>
+            <div class="form-group">
+                <label for="updateIncomeInput">Income:</label>
+                <input type="number" class="form-control" id="updateIncomeInput" placeholder="Enter income">
+            </div>
+            <div class="form-group">
+                <label for="updateCategoriesInput">Categories (comma-separated):</label>
+                <input type="text" class="form-control" id="updateCategoriesInput" placeholder="e.g., Food,Housing,Transportation">
+            </div>
+            <button class="btn btn-primary" onclick="updateBudget()">Update Budget</button>
+        </div>
+
+        <div class="mt-4">
+            <h3>Get Categories</h3>
+            <button class="btn btn-primary" onclick="getCategories()">Get Categories</button>
+        </div>
+
+        <div class="mt-4">
+            <h3>Delete Budget</h3>
+            <button class="btn btn-danger" onclick="deleteBudget()">Delete Budget</button>
+        </div>
+    </div>
+
+    <!-- Add jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        const apiBaseUrl = 'http://142.198.192.83:5000';
+
+        function setBudget() {
+            const income = $('#incomeInput').val();
+            const categories = $('#categoriesInput').val().split(',');
+            const data = {
+                "income": income,
+                "categories": categories
+            };
+
+            $.ajax({
+                url: `${apiBaseUrl}/budget`, // Use the full API URL
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (response) {
+                    alert(response.message);
+                }
+            });
+        }
+
+        function updateBudget() {
+            const income = $('#updateIncomeInput').val();
+            const categories = $('#updateCategoriesInput').val().split(',');
+            const data = {
+                "income": income,
+                "categories": categories
+            };
+
+            $.ajax({
+                url: `${apiBaseUrl}/budget`, // Use the full API URL
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (response) {
+                    alert(response.message);
+                }
+            });
+        }
+
+        function getCategories() {
+            $.ajax({
+                url: `${apiBaseUrl}/budget/categories`, // Use the full API URL
+                type: 'GET',
+                success: function (categories) {
+                    $('#categories').text(categories.join(', '));
+                }
+            });
+        }
+
+        function deleteBudget() {
+            $.ajax({
+                url: `${apiBaseUrl}/budget`, // Use the full API URL
+                type: 'DELETE',
+                success: function (response) {
+                    alert(response.message);
+                    $('#income').text('');
+                    $('#categories').text('');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
