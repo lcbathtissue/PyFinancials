@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Financial Data</title>
+</head>
+<body>
+    <h1>User Data</h1>
+    <li>user_id_counter: {{ user_id_counter }}</li>
+    <ul>
+    {% for user_id, user_data in users.items() %}
+        <li>User ID: {{ user_id }}</li>
+        <ul>
+            {% for key, value in user_data.items() %}
+                <li>{{ key }}: {{ value }}</li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+    </ul>
+    <h1>Budget Data</h1>
+    <li>budget: {{ budget }}</li>
+    <h1>Income Data</h1>
+    <ul>
+    {% for date, amount in income_data.items() %}
+        <li>{{ date }}: ${{ amount }}</li>
+    {% endfor %}
+    </ul>
+
+    <h1>Expenses Data</h1>
+    <ul>
+    {% for date, categories in expenses_data.items() %}
+        <li>{{ date }}:
+            <ul>
+            {% for category, amount in categories.items() %}
+                <li>{{ category }}: ${{ amount }}</li>
+            {% endfor %}
+            </ul>
+        </li>
+    {% endfor %}
+    </ul>
+
+    <h1>Predefined Categories</h1>
+    <ul>
+    {% for category in predefined_categories %}
+        <li>{{ category }}</li>
+    {% endfor %}
+    </ul>
+
+    <h1>Custom Categories</h1>
+    <ul>
+    {% for category, amount in custom_categories.items() %}
+        <li>{{ category }}: ${{ amount }}</li>
+    {% endfor %}
+    </ul>
+</body>
+</html>

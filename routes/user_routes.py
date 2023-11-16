@@ -1,14 +1,15 @@
 from flask import Blueprint, request, jsonify
 # from PyFinancials import app
-from data import users
+from data import users, user_id_counter
 
 user_routes = Blueprint('user_routes', __name__)
 
 # Endpoint to create a new user profile
 @user_routes.route('/users', methods=['POST'])
 def create_user():
-    data = request.get_json()
     global user_id_counter
+    global users
+    data = request.get_json()
     user_id = user_id_counter
     user_id_counter += 1
     users[user_id] = data
